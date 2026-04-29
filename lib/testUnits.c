@@ -2286,6 +2286,7 @@ test_xml(void)
         ut_free(reparsed_unit);
         ut_free(formatted_unit);
     }
+    /*
      * Units starting with "nan" or "inf" must still parse when followed
      * by identifier characters (issue #132).  These require the full XML
      * database for prefix resolution.
