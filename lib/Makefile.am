@@ -30,10 +30,17 @@ pkgdata_DATA = \
     udunits2-prefixes.xml
 TEXINFO_TEX	= ../texinfo.tex
 info_TEXINFOS 	= udunits2lib.texi
+udunits2lib_TEXINFOS = grammar.texi
 #html_DATA = udunits2lib.html
 #pdf_DATA = udunits2lib.pdf
 AM_MAKEINFOFLAGS = -I $(top_srcdir)
 AM_MAKEINFOHTMLFLAGS = --no-split -I $(top_srcdir)
+
+# Regenerate the unit-grammar texinfo include from the canonical Markdown
+# source.  GRAMMAR.md lives at the top of the source tree.
+grammar.texi: $(top_srcdir)/GRAMMAR.md $(top_srcdir)/lib/md-grammar-to-texi.awk
+	$(AWK) -f $(top_srcdir)/lib/md-grammar-to-texi.awk \
+	    $(top_srcdir)/GRAMMAR.md > $@
 libudunits2_la_LDFLAGS	= -version-number 0:1:0 -no-undefined
 
 lex_prefix = ut
@@ -43,6 +50,7 @@ LFLAGS = -d -P$(lex_prefix)
 include_HEADERS = udunits2.h converter.h
 EXTRA_DIST = udunits_snprintf.c \
              CMakeLists.txt \
+             md-grammar-to-texi.awk \
              parser.c \
              scanner.l \
              scanner.c \

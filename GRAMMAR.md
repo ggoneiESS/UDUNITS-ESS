@@ -222,8 +222,8 @@ Here is the unit-syntax understood by the UDUNITS-2 package. Words printed \_Thu
             [0-5]?[0-9]
 
     <second>:
-            (<minute> | "60") (\. <digit>*)?
-            // leap second (= 60) is silently interpreted as the same as 00 of the immediately succeeding minute)
+            (<minute> | "60") ("." <digit>*)?
+            // leap second (= 60) is silently interpreted as the same as 00 of the immediately succeeding minute
 
 // Logarithmic Elements
 
