@@ -217,6 +217,10 @@ Here is the unit-syntax understood by the UDUNITS-2 package. Words printed \_Thu
             // In principle sign may appear in both time-of-day and timezone offsets. However,
             // sign only applies to 0-19, not 20-23. This is correct: time-of-day (0-23) should
             // be unsigned whereas timezone offsets that are in the range (±0-14) should have signs.
+            // BUG (main, 2026-05): when <hour> carries a sign and the hour magnitude is zero,
+            // the sign is silently dropped. Affects all signed timezone-offset forms;
+            // "-0:53", "-053", and "-0053" are all parsed as +0:53. The defect is in the
+            // decodeClock() helper in lib/scanner.l, not in this rule.
 
     <minute>:
             [0-5]?[0-9]
