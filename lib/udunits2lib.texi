@@ -3,7 +3,6 @@
 @c %**start of header
 @setfilename udunits2lib.info
 @settitle The UDUNITS-2 C API Guide
-@documentencoding UTF-8
 @c %**end of header
 @dircategory Software libraries
 @direntry

@@ -86,21 +86,27 @@ endif()
 # The documentation is in multiple texinfo(5) format files.
 # grammar.texi is generated from ../GRAMMAR.md by md-grammar-to-texi.awk and
 # included by udunits2lib.texi via `@include grammar.texi'.
+#
+# grammar.texi is committed to the repository, so awk is not required to
+# build the docs.  If awk is available we wire up a regeneration rule
+# (used when GRAMMAR.md or the script changes); if not, we fall back to
+# the committed file.
 find_program(UD_AWK NAMES awk gawk mawk)
-if(NOT UD_AWK)
-    message(FATAL_ERROR
-        "awk(1) not found; required to regenerate lib/grammar.texi from "
-        "GRAMMAR.md.")
+if(UD_AWK)
+    add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/grammar.texi
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${UD_AWK} -v out=${CMAKE_CURRENT_SOURCE_DIR}/grammar.texi
+                -f ${CMAKE_CURRENT_SOURCE_DIR}/md-grammar-to-texi.awk
+                ${CMAKE_SOURCE_DIR}/GRAMMAR.md
+        DEPENDS ${CMAKE_SOURCE_DIR}/GRAMMAR.md
+                ${CMAKE_CURRENT_SOURCE_DIR}/md-grammar-to-texi.awk
+        COMMENT "Generating lib/grammar.texi from GRAMMAR.md")
+else()
+    message(WARNING
+        "awk(1) not found; lib/grammar.texi will not be regenerated from "
+        "GRAMMAR.md.  The committed grammar.texi will be used as-is.")
 endif()
-add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/grammar.texi
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMAND ${UD_AWK} -v out=${CMAKE_CURRENT_SOURCE_DIR}/grammar.texi
-            -f ${CMAKE_CURRENT_SOURCE_DIR}/md-grammar-to-texi.awk
-            ${CMAKE_SOURCE_DIR}/GRAMMAR.md
-    DEPENDS ${CMAKE_SOURCE_DIR}/GRAMMAR.md
-            ${CMAKE_CURRENT_SOURCE_DIR}/md-grammar-to-texi.awk
-    COMMENT "Generating lib/grammar.texi from GRAMMAR.md")
 
 texi_doc(udunits2lib.texi ${CMAKE_SOURCE_DIR}/COPYRIGHT
     ${CMAKE_CURRENT_SOURCE_DIR}/grammar.texi)
